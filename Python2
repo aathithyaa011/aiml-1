@@ -1,0 +1,33 @@
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+def send_email(sender_email, sender_password, receiver_email, subject, body):
+    # Setup the MIME
+    message = MIMEMultipart()
+    message['From'] = sender_email
+    message['To'] = receiver_email
+    message['Subject'] = subject
+    message.attach(MIMEText(body, 'plain'))
+
+    try:
+        # Connect to the SMTP server (Example uses Gmail's SMTP)
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls() # Secure the connection
+        server.login(sender_email, sender_password)
+        
+        # Send the email
+        text = message.as_string()
+        server.sendmail(sender_email, receiver_email, text)
+        print("Email sent successfully!")
+        
+    except Exception as e:
+        print(f"Failed to send email. Error: {e}")
+        
+    finally:
+        server.quit()
+
+if __name__ == "__main__":
+    # Note: Never hardcode real passwords in your GitHub repository!
+    # Use environment variables instead.
+    send_email("your_email@gmail.com", "your_app_password", "receiver@example.com", "Test Subject", "This is a test email.")
